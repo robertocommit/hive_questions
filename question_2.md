@@ -164,16 +164,16 @@ create table scrapings (
 I would give to the pipeline a cloud based ~ serverless ~ microservices oriented architecture,<br>
 keeping completely separated the part of data extration with the part of data analysis.
 
-Each social media would have one specific lambda function dedicated:
-- a lambda function to extract the data (wheater using API or pure scraping)
+Each social media would have one specific main lambda function dedicated (more might be necessary):
+- a lambda function to extract the data of from a social media (wheater using API or pure scraping)
 
 Moreover, common lambda functions are necessary:
 - a lambda function to check if the data extracted respect the schema created for a specific social media
 - a set of lambda functions to store the data in the dedicated JSON
 - a set of lambda functions to check quality of the data triggering other functions in case of failures
 
-In order to run and execute those lambdas, an Apache Airflow running on Kubernetes is necessary.
+In order to run and execute those lambdas, I would implement an Apache Airflow instabce running on Kubernetes.
 
-Millions of daily requests would be necessary, so it might make sense to split the strucure above mentioned by social media.
+Millions of daily requests would be necessary, so it might make sense to split the structure above mentioned by social media.
 So for example I would have a K8S Airflow instance only dedicated to Twitter.
 This division would produce strong advantages in terms of maintenability of the whole pipeline.
