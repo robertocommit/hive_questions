@@ -96,8 +96,8 @@ In this example I will show how I would store LinkedIn data of a certain user.
 The same structure can be applied to other social media.
 ```json
 {
-	"social_UI87ZzZ78E": { // unique social ID connected to a specific user
-		"scraping_73ZHdfF&tz": { // scrpaing session ID
+	"social_UI87ZzZ78E": {
+		"scraping_73ZHdfF&tz": {
 			"timestamp": "2020/11/06 11:52:35",
 			"version": "version_002",
 			"data": {
@@ -162,7 +162,7 @@ create table scrapings (
 
 # Data Pipeline
 I would give to the pipeline a cloud based ~ serverless ~ microservices oriented architecture,<br>
-keeping completely separated the part of data extration with the part of data analysis.
+keeping completely separated the part of data extration from the part of data analysis.
 
 Each social media would have one specific main lambda function dedicated (more might be necessary):
 - a lambda function to extract the data of from a social media (wheater using API or pure scraping)
@@ -172,8 +172,8 @@ Moreover, common lambda functions are necessary:
 - a set of lambda functions to store the data in the dedicated JSON
 - a set of lambda functions to check quality of the data triggering other functions in case of failures
 
-In order to run and execute those lambdas, I would implement an Apache Airflow instabce running on Kubernetes.
+In order to run and execute those lambdas, I would implement an Apache Airflow instance running on Kubernetes.
 
-Millions of daily requests would be necessary, so it might make sense to split the structure above mentioned by social media.
-So for example I would have a K8S Airflow instance only dedicated to Twitter.
-This division would produce strong advantages in terms of maintenability of the whole pipeline.
+Millions of daily requests would be necessary, so it might make sense to split the structure above mentioned by social media.<br>
+So for example I would have a K8S Airflow instance only dedicated to Twitter.<br><br>
+This division would produce strong advantages in terms monitoring and maintenability of the whole pipeline.
