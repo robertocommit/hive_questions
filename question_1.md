@@ -5,7 +5,7 @@ ___
 
 I am going to provide you the database schema I developed to sustain data's needs of the Saas [I am currently building](https://www.jeifai.com).
 
-The core of the tool is a concurrent web scrapers built using Golang, targeting companies' career pages (currently 470 tech companies are monitored).
+The backend of the Saas is a concurrent web scrapers built using Golang, targeting companies' career pages (currently 470 tech companies are monitored).
 
 When I build tools I want to sit on giants' shoulders: as database I use Postgresql running on Google Cloud Platform.
 
@@ -14,9 +14,16 @@ After I create a prototype, I design the schema which would allow me to run such
 In my opinion, in the same way as nature works, **schemas and queries have to be beautiful**.<br>
 As conseguence they tend to be easy to read and easy to maintain.
 
+Design choices have been taken considering the main mission of the Saas:
+
+```
+To allow a user to get notified as soon as possibile
+when a company publishes a new job offer connected to certain keywords.
+```
+
 ___
 
-My data architecture is mainly divided in two sections: companies, users.<br>
+The data architecture is mainly divided in two sections: companies and users.<br>
 Here I will explain the high level principles behind my choices.
 
 ### Companies
@@ -42,11 +49,6 @@ I also scrape Linkedin's data for each company. Data are stored in a table calle
 The Saas allows each user to select a list of favourite companies, as well as favourite keywords (for example "data" or "analyst").
 A user can conseguentely assign a fav keyword to a fav company.<br>
 
-```
-The goal is to allow a user to get notified as soon as possibile
-whenever a company publishes a new job offer connected to his keywords.
-```
-
 Each user has an entry in the table *users*.
 Whenever a user adds a new fav company, a new entry in the table *userstarget*" is created, same for fav keyword with table *userskeywords*.<br>
 Matches between fav keywords and fav companies are stored in a table called *userstargetskeywords*.<br>
@@ -65,7 +67,7 @@ AND utk.deletedat IS NULL;
 ```
 
 ## Data Schema
-I use Google Drawing to draw the schema, keeping it up to date whenever change is made.
-Moreover using Google Drawing, I can play around with the schema trying to give it an optimal layout.
+I use Google Drawing to draw the schema, keeping it up to date whenever a change is made.<br>
+Moreover thanks to Google Drawing I can play around with the schema trying to give it an optimal layout.<br>
 Here you can find how my data schema look like:
 ![](https://github.com/robimalco/hive_questions/blob/main/images/data_schema.png)
