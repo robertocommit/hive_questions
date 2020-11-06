@@ -1,12 +1,16 @@
 - _Please walk us through your thinking of what some first-principle rules you'd follow in designing our data schemas and the whole data pipeline considering our goals. We are planning to index all kinds of social media (i.e. various platforms such as Twitter, Reddit etc., but also platforms that don't exist today, but will in the future), media (podcasts, youtube videos, articles etc. and other media formats that may emerge in the future) in such a way that they can cross-reference each other. We will also need to index a multi-dimensional identities that will tie to these pieces of content (e.g. identifiers connected across multiple social media platforms, but also such entities as Bitcoin wallets, email addresses or phone numbers). The purpose of this question is for us to see your thinking process – we'd like to understand how you would approach such a problem, rather than get any particular answer._
 ___
 
-This is one of the most fashinating yet complex challenges I have heard.<br>
+This is one of the most fascinating yet complex challenges I have heard.<br>
 I try to describe your mission using my own words:
 
 ```
 The goal is to collect and structure users' social media presence.
 ```
+Below I will try to explain how I would apporach the data schema and the data pipeline for such an ambitous goal.
+
+# Data Schema
+
 The "data framework" I imagine would allow to integrate seamleassy any new social media, independentely from their type.
 
 Following the suggestions you gave in the description, I would divide the problem in four macro sections:
@@ -26,10 +30,9 @@ For example, storing the text of a tweet and its URL, or only the URL?
 I am raising this question because of the dynamic nature of the data related to social media.
 The number of likes can increase, the text of a facebook post can change, the text of a tweet post cannot be changed, and so on...
 
-
 Here how I would imagine the four massive JSON.
 
-## User
+### User
 A user can have multiple social connections,<br>
 and each social connection can have multiple addresses (example a user with two twitter accounts).
 ```json
@@ -50,7 +53,7 @@ and each social connection can have multiple addresses (example a user with two 
 }
 ```
 
-## Social
+### Social
 Any social media has a clear and univoque way to store information.
 What is important is to grant flixibility,<br>
 allowing versioning in case a social media update itself.
@@ -87,7 +90,7 @@ allowing versioning in case a social media update itself.
 }
 ```
 
-## SocialUser
+### SocialUser
 Here the scraped data are stored.
 In this example I will show how I would store LinkedIn data of a certain user.
 The same structure can be applied to other social media.
@@ -143,7 +146,7 @@ The same structure can be applied to other social media.
 }
 ```
 
-## Scraping
+### Scraping
 These data can be stored in a pure relational database.
 The purpose of this table is to keep track of any scraing sessions and their status.
 ```sql
@@ -156,3 +159,21 @@ create table scrapings (
   socialid		varchar(15)
 );
 ```
+
+# Data Pipeline
+I would give to the pipeline a cloud based ~ serverless ~ microservices oriented architecture,<br>
+keeping completely separated the part of data extration with the part of data analysis.
+
+Each social media would have one specific lambda function dedicated:
+- a lambda function to extract the data (wheater using API or pure scraping)
+
+Moreover, common lambda functions are necessary:
+- a lambda function to check if the data extracted respect the schema created for a specific social media
+- a set of lambda functions to store the data in the dedicated JSON
+- a set of lambda functions to check quality of the data triggering other functions in case of failures
+
+In order to run and execute those lambdas, an Apache Airflow running on Kubernetes is necessary.
+
+Millions of daily requests would be necessary, so it might make sense to split the strucure above mentioned by social media.
+So for example I would have a K8S Airflow instance only dedicated to Twitter.
+This division would produce strong advantages in terms of maintenability of the whole pipeline.
