@@ -4,18 +4,22 @@ ___
 
 Also for this question, I am going to provide you an answer based on the Saas [I am currently building](https://www.jeifai.com).
 
-There are also other characteristics I want for my scraper:
+Below I will try to explain how I scrape the data, how I clean/segment them and also my final goal.
+
+# Data Scraping
+
+Here the characteristics I want for my scraper:
 - Fast
 - Running  independently from each other
 - Running in parallel from each other
 - Simple to read
 - Simple to maintain
 - Simple to debug
-- Give me a good way to run headless Chrome
+- Easy to integrate with headless Chrome
 
 So I decided to start learning and using Golang for this project.
 
-### Scraper's flow
+### Scraper's flow	
 
 * Start main function
 * Connect to the database
@@ -26,18 +30,20 @@ So I decided to start learning and using Golang for this project.
 
 ### Scrapers' structure
 All the scrapers are included in a single file called *scrapers.go*.<br>
-The most important aspect is to produce code as identical as possibile to each other.<br>
-The two main tools used to scrape are:
-* *[Colly](http://go-colly.org/)*: Golang scraping best library
-* *[Chromedp](https://github.com/chromedp/chromedp)*: Run an headless Google Chrome instance
 
-Not all the career pages are identical:
-During the last months, I have been able to divide job career' pages in different tiers.
+Not all the career pages are identical,<br>
+but it is really important to produce code as identical as possibile to each other.<br>
+
+During the last months, I have been able to divide job career' pages in different tiers:
 * *HTML*: data are stored into the HTML response, Colly is used.
 * *API*: data are returned after an API call, Colly is used.
 * *Javascript*: data are stored into the HTML, but after Javascript renders the page, Colly and Chromedp are used.
-* *API_POST*: data are returned after an initial API call to get the cookies, Colly and Chromedp are used.
+* *API_POST*: data are returned after an initial API POST call to get the cookies, Colly and Chromedp are used.
 * *Pagination*: if any of the category above presents pagination, it is necessary to implement a logic for it.
+
+The two main tools used to scrape are:
+* *[Colly](http://go-colly.org/)*: Golang scraping best library
+* *[Chromedp](https://github.com/chromedp/chromedp)*: Run an headless Google Chrome instance
 
 ### How to create a new scraper?
 The creation of a new scraper is divided in two different part:
@@ -98,7 +104,7 @@ func (runtime Runtime) Google() (results Results) {
 ```
 
 ### **How to run a scraper?**
-I wanted to run my scraper from CLI, so I started using Cobra.
+I wanted to run my scraper from CLI, [so I started using Cobra](https://github.com/spf13/cobra).
 
 Now it is possibile to run a scraper from CLI using:
 ```bash
@@ -106,3 +112,44 @@ Now it is possibile to run a scraper from CLI using:
 ```
 * -s select any scraper name
 * -r true if results need to be saved, false otherwise (might be useful for testing purposes)
+
+# Data Cleaning/Segmentation
+
+In am currently working on this part of the project.
+I want my data to be clean because I aim to learn how to apply ML techniques to my data.
+
+At the moment I extract these information:
+ - job_createdat
+ - job_title
+ - job_location
+ - job_url
+
+### Country
+The first important step is to extract Country from the location.<br>
+In order to do so I am using Python, Pandas and a [fantastic dataset](http://www.geonames.org/) containings geo details of around 200K cities in the world.
+Each city has also the translation of their name in multiple langiages.
+
+### Seniority
+The second step is to segment the data according to the seniority level of the position.
+I want to classify if a job is dedicated to a Senior or Junior position.
+```sql
+SELECT
+    r.id,
+	r.title,
+	CASE
+		WHEN LOWER(r.title) SIMILAR TO '%(chief|officer|president|director|executive|partner|advisor|founder)%' THEN 4
+		WHEN LOWER(r.title) SIMILAR TO '%(manager|principal|lead|specialist|architect|scientist|expert|head|leader|staff|senior|security|consultant|management|deputy|researcher|administrator|master|phd|counsel)%' THEN 3
+		WHEN LOWER(r.title) SIMILAR TO '%(engineer|engineering|ingenieur|developer|analyst|sales|product|business|development|operations|customer|marketing|project|technician|designer|supervisor|recruiter|coordinator|associate|account|support|assistant|service|technical|operator|controller|planner|trainer)%' THEN 2
+		WHEN LOWER(r.title) SIMILAR TO '%(intern|ausbildung|praktikum|praktikant|internship|junior|student|werkstudent|trainee)%' THEN 1
+	END AS tier
+FROM results r;
+```
+
+### Information Technology
+I failed in trying to segment a job based on the department (for example Sales VS marketing).
+So I decided to use another apporach, identify which jobs are related to information technology (software, develoeper, analyst...).
+Using Stackoverflow survey I have been able to identify the most important Tags of their questions,<br>
+so now I have a list of ~300 keywords dedicated to IT jobs, which I can use to segment the job titles.
+
+### What's next
+I am currently in the process of learning Pytorch to start apply learning techniques to my data.
