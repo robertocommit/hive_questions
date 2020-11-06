@@ -1,6 +1,5 @@
 - _Please provide an example of your past work that is the most relevant to this job. We'd like to be able to see a database schema that you've previously designed._
 - _Please provide context for the design choices that you've made, so that we can understand why you designed the way you did._
-
 ___
 
 I am going to provide you the database schema I developed to sustain data's needs of the Saas [I am currently building](https://www.jeifai.com).
