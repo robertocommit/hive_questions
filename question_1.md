@@ -68,4 +68,4 @@ AND utk.deletedat IS NULL;
 I use Google Drawing to draw the schema, keeping it up to date whenever change is made.
 Moreover using Google Drawing, I can play around with the schema trying to give it an optimal layout.
 Here you can find how my data schema look like:
-![](https://github.com/robimalco/hive_questions/images/data_schema.png)
+![](https://github.com/robimalco/hive_questions/blob/main/images/data_schema.png)
