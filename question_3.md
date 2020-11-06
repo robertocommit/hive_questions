@@ -119,18 +119,21 @@ In am currently working on this part of the project.
 I want my data to be clean because I aim to learn how to apply ML techniques to my data.
 
 At the moment I extract these information:
- - job_createdat
+ - company_name 
+ - job_date
  - job_title
  - job_location
  - job_url
 
+I want to enrich my data cleaning them and extracting useful information. 
+
 ### Country
 The first important step is to extract Country from the location.<br>
-In order to do so I am using Python, Pandas and a [fantastic dataset](http://www.geonames.org/) containings geo details of around 200K cities in the world.
-Each city has also the translation of their name in multiple langiages.
+In order to do so I am using Python, Pandas and a [fantastic dataset](http://www.geonames.org/) containings geo details of around 200K cities in the world.<br>
+The best part of the dataset is that each city has also the translation of their name in multiple langiages.
 
 ### Seniority
-The second step is to segment the data according to the seniority level of the position.
+The second step is to segment the data according to the seniority level of the position.<br>
 I want to classify if a job is dedicated to a Senior or Junior position.
 ```sql
 SELECT
@@ -145,10 +148,10 @@ SELECT
 FROM results r;
 ```
 
-### Information Technology
-I failed in trying to segment a job based on the department (for example Sales VS marketing).
-So I decided to use another apporach, identify which jobs are related to information technology (software, develoeper, analyst...).
-Using Stackoverflow survey I have been able to identify the most important Tags of their questions,<br>
+### Information Technology<br>
+I failed in trying to segment a job based on the department (for example Sales VS marketing).<br>
+So I decided to use another apporach, identify which jobs are related to information technology (software, develoeper, analyst...).<br>
+Using Stackoverflow survey I have been able to identify the most important Tags of their questions,
 so now I have a list of ~300 keywords dedicated to IT jobs, which I can use to segment the job titles.
 
 ### What's next
