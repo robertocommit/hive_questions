@@ -50,7 +50,7 @@ The Saas allows each user to select a list of favourite companies, as well as fa
 A user can conseguentely assign a fav keyword to a fav company.<br>
 
 Each user has an entry in the table *users*.
-Whenever a user adds a new fav company, a new entry in the table *userstarget*" is created, same for fav keyword with table *userskeywords*.<br>
+Whenever a user adds a new fav company, a new entry in the table *userstarget* is created, same for fav keyword with table *userskeywords*.<br>
 Matches between fav keywords and fav companies are stored in a table called *userstargetskeywords*.<br>
 To get the fav companies and fav keywords of a user, I can write:
 ```sql
@@ -62,6 +62,8 @@ FROM users u
 LEFT JOIN userskeywords uk ON(u.id = uk.userid)
 LEFT JOIN userstargets ut ON(u.id = ut.userid)
 LEFT JOIN userstargetskeywords utk ON(uk.id = utk.userkeywordid AND ut.id = utk.usertargetid)
+LEFT JOIN targets t ON(ut.targetid = t.id)
+LEFT JOIN keywords k ON(uk.keywordid = k.id)
 WHERE u.name = 'Roberto'
 AND utk.deletedat IS NULL;
 ```
